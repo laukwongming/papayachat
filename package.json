@@ -1,0 +1,21 @@
+{
+  "name": "papayachat",
+  "version": "1.0.0",
+  "description": "IM For company chat",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chat",
+    "IM"
+  ],
+  "author": "siuming.lau",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^4.9.0",
+    "app-root-path": "^2.0.1",
+    "mongodb": "^2.2.11",
+    "websocket": "^1.0.23"
+  }
+}
