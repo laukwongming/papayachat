@@ -14,14 +14,39 @@ const schema =   {
 };
 
 class ChatClient{
-    constructor(con){
-        this._connection        = con;
+    constructor(){
         this._isLogin           = false;
         this._roster            = [];
+        this.username           = null;
+    }
+
+    usersContainer(){
+        return ChatUsersContainer.getInstance();
+    }
+
+    bindConnection(con){
+        this._connection        = con;
+        this._connection.on('close', (reasonCode, description)=> {
+            this.usersContainer().removeClient(this);
+        });
+
+        this._connection.on('message', (message)=> {
+            if(message.type !== 'utf8'){
+                    this.close();
+                    return;
+            }
+            this.messageRoute(message.utf8Data);
+        });
     }
 
     sendMsg(msg){
         this._connection.sendUTF(msg);
+    }
+
+    sendErrorAndClose(actioncode,errcode){
+        var error = {code:actioncode,result:errcode};
+        this.sendMsg(JSON.stringify(error));
+        this.close();
     }
 
     close(){
@@ -29,9 +54,13 @@ class ChatClient{
     }
 
     messageRoute(message){
-
         let msgObj = schemaVaildate.validateToObj(schema,message);
         if(!msgObj){
+            this.close();
+            return;
+        }
+
+        if(msgObj.code !== 20000 && !this._isLogin){
             this.close();
             return;
         }
@@ -41,7 +70,6 @@ class ChatClient{
             this.close();
             return;
         }
-
 
         protocoObj.process(msgObj,this);
     }

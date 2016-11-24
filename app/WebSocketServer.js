@@ -42,22 +42,10 @@ class WebSocketServer {
                 return;
             }
 
-            //connection suc
+            //connection successful
             let connection = request.accept('echo-protocol', request.origin);
-
-            let client = new ChatClient(connection);
-            connection.on('close', (reasonCode, description)=> {
-                ChatUsersContainer.getInstance().removeClient(client);
-            });
-
-            connection.on('message', (message)=> {
-                if(message.type !== 'utf8'){
-                    client.close();
-                    return;
-                }
-                client.messageRoute(message.utf8Data);
-            });
-
+            let chatClient = new ChatClient();
+            chatClient.bindConnection(connection);
         });
 
         return wsServer;

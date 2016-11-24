@@ -16,8 +16,12 @@ class ChatUsersContainer {
         this.clients.push(c);
     }
 
-    findById(c){
-        let index = this.clients.indexOf(c);
+    findByUsername(username){
+        let reuslt = this.clients.find(x=>x.username === username);
+        if(reuslt !== undefined)
+            return reuslt;
+
+        return false;
     }
 
     removeClient(c){
@@ -28,3 +32,5 @@ class ChatUsersContainer {
         }
     }
 }
+
+module.exports = ChatUsersContainer;

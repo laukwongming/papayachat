@@ -12,3 +12,5 @@ class ParserBase {
         }
     }
 }
+
+module.exports = ParserBase;
