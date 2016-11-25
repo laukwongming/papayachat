@@ -41,6 +41,7 @@ class PTL20000 extends ParserBase {
             chatclient.sendJsonObj(respone);
         });
     }
+
 }
 module.exports = PTL20000;
 

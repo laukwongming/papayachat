@@ -2,6 +2,7 @@
 const  schemaVaildate       = reqlib('/lib/helper/JsonSchemaValidation.js');
 const  ChatFactory          = reqlib('/spec/chatprotocol/ChatFactory.js');
 const  ChatUsersContainer   = reqlib('/app/ChatUsersContainer.js');
+const  EventEmitter         = require("events").EventEmitter;
 
 const schema =   {
     "type": "object",
@@ -13,16 +14,22 @@ const schema =   {
     "required": ["code"]
 };
 
-class ChatClient{
+class ChatClient extends EventEmitter{
     constructor(){
-        this._roster            = [];
-        this.aid                = null;
+        this.on('rosterOnline',()=>{
+
+        });
+
+        this.on('rosterOffline',()=>{
+
+        });
     }
 
     updateInfo(user){
         this.aid        = user.aid;
         this.nickname   = user.nickname;
         this.email      = user.email;
+        this.roster     = user.roster;
     }
 
     usersContainer(){
@@ -33,6 +40,7 @@ class ChatClient{
         this._connection        = con;
         this._connection.on('close', (reasonCode, description)=> {
             this.usersContainer().removeClient(this);
+            this.emit('rosterOffline',this.aid);
         });
 
         this._connection.on('message', (message)=> {
