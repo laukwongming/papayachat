@@ -16,8 +16,8 @@ class ChatUsersContainer {
         this.clients.push(c);
     }
 
-    findByUsername(username){
-        let reuslt = this.clients.find(x=>x.username === username);
+    findByAid(aid){
+        let reuslt = this.clients.find(x=>x.aid === aid);
         if(reuslt !== undefined)
             return reuslt;
 

@@ -15,9 +15,14 @@ const schema =   {
 
 class ChatClient{
     constructor(){
-        this._isLogin           = false;
         this._roster            = [];
-        this.username           = null;
+        this.aid                = null;
+    }
+
+    updateInfo(user){
+        this.aid        = user.aid;
+        this.nickname   = user.nickname;
+        this.email      = user.email;
     }
 
     usersContainer(){
@@ -37,6 +42,14 @@ class ChatClient{
             }
             this.messageRoute(message.utf8Data);
         });
+    }
+
+    addToUsersContainer(){
+        this.usersContainer().addClient(this);
+    }
+
+    sendJsonObj(obj){
+        this.sendMsg(JSON.stringify(obj));
     }
 
     sendMsg(msg){
@@ -60,7 +73,7 @@ class ChatClient{
             return;
         }
 
-        if(msgObj.code !== 20000 && !this._isLogin){
+        if(msgObj.code !== 20000 && !this.aid){
             this.close();
             return;
         }

@@ -1,5 +1,5 @@
 const ParserBase = reqlib('/spec/chatprotocol/ParserBase.js');
-
+const UserModel = reqlib('/app/model/User.js');
 class PTL20000 extends ParserBase {
     schema(){
         return {
@@ -8,24 +8,38 @@ class PTL20000 extends ParserBase {
                 "code": {
                     "type": "integer"
                 },
-                "username": {
+                "aid": {
                     "type": "string"
                 },
-                "password": {
+                "pw": {
                     "type": "string"
                 }
             },
-            "required": ["code"]
+            "required": ["code","aid","pw"]
         };
     }
 
     process(msgObj,chatclient){
-        super.process(msgObj,chatclient);
-        let user = chatclient.usersContainer().findByUsername(msgObj.username)
+        super.process(msgObj,chatclient)
+        let user = chatclient.usersContainer().findByAid(msgObj.aid)
         if(user){
             chatclient.sendErrorAndClose(msgObj.code,PPYC_ERROR_CODE.LOGIN_DUPLICATE);
             return;
         }
+
+        UserModel.findByAidAndPwInDB(msgObj.aid,msgObj.pw,(doc)=>{
+            if(!doc){
+                chatclient.sendErrorAndClose(msgObj.code,PPYC_ERROR_CODE.LOGIN_NO_USER);
+                return;
+            }
+
+            //login successful
+            chatclient.updateInfo(doc);
+            chatclient.addToUsersContainer();
+
+            let respone = {code:msgObj.code,result:1};
+            chatclient.sendJsonObj(respone);
+        });
     }
 }
 module.exports = PTL20000;

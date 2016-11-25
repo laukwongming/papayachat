@@ -4,8 +4,7 @@ global.PPYC_ERROR_CODE = reqlib('/error/Error.js').ERROR;
 
 let app = reqlib('/app/App');
 
-reqlib('/app/model/User.js');
-
+let User = reqlib('/app/model/User.js');
 app.getInstance().run();
 
 
