@@ -2,8 +2,8 @@
 const  schemaVaildate       = reqlib('/lib/helper/JsonSchemaValidation.js');
 const  ChatFactory          = reqlib('/spec/chatprotocol/ChatFactory.js');
 const  ChatUsersContainer   = reqlib('/app/ChatUsersContainer.js');
-const  EventEmitter         = require("events").EventEmitter;
-
+const  App                  = reqlib('/app/App.js');
+const  ChatPRC              = reqlib('/app/channel/ChatPRC.js');
 const schema =   {
     "type": "object",
     "properties": {
@@ -14,16 +14,7 @@ const schema =   {
     "required": ["code"]
 };
 
-class ChatClient extends EventEmitter{
-    constructor(){
-        this.on('rosterOnline',()=>{
-
-        });
-
-        this.on('rosterOffline',()=>{
-
-        });
-    }
+class ChatClient{
 
     updateInfo(user){
         this.aid        = user.aid;
@@ -40,7 +31,7 @@ class ChatClient extends EventEmitter{
         this._connection        = con;
         this._connection.on('close', (reasonCode, description)=> {
             this.usersContainer().removeClient(this);
-            this.emit('rosterOffline',this.aid);
+            App.getInstance().chatPRC.emit(ChatPRC.KEY_RosterOffLine,this);
         });
 
         this._connection.on('message', (message)=> {
@@ -54,6 +45,7 @@ class ChatClient extends EventEmitter{
 
     addToUsersContainer(){
         this.usersContainer().addClient(this);
+        App.getInstance().chatPRC.emit(ChatPRC.KEY_RosterOnLine,this);
     }
 
     sendJsonObj(obj){
@@ -86,13 +78,13 @@ class ChatClient extends EventEmitter{
             return;
         }
 
-        let protocoObj = ChatFactory.make(msgObj.code);
-        if(!protocoObj){
+        let protocolObj = ChatFactory.make(msgObj.code);
+        if(!protocolObj){
             this.close();
             return;
         }
 
-        protocoObj.process(msgObj,this);
+        protocolObj.process(msgObj,this);
     }
 }
 module.exports = ChatClient;

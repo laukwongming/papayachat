@@ -1,8 +1,8 @@
-const  WSS  = require('websocket').server;
-const  http = require('http');
+const  WSS                  = require('websocket').server;
+const  http                 = require('http');
 
-const  ChatConnection = reqlib('/app/ChatClient.js');
-const  ChatUsersContainer    = reqlib('/app/ChatUsersContainer.js');
+const  ChatConnection       = reqlib('/app/ChatClient.js');
+const  ChatUsersContainer   = reqlib('/app/ChatUsersContainer.js');
 
 class WebSocketServer {
     constructor(ip,port){
@@ -14,7 +14,7 @@ class WebSocketServer {
 
     start(){
         this._httpServer    = this.createHttpServer(this._port);
-        this.wsServer       = this.createWebSocket(this._httpServer);
+        this._wsServer      = this.createWebSocket(this._httpServer);
     }
 
     createHttpServer(port){
@@ -31,6 +31,7 @@ class WebSocketServer {
     }
 
     createWebSocket(httpServer){
+
         let wsServer = new WSS({
             httpServer: httpServer,
             autoAcceptConnections: false
@@ -41,6 +42,7 @@ class WebSocketServer {
                 request.reject();
                 return;
             }
+
 
             //connection successful
             let connection = request.accept('echo-protocol', request.origin);

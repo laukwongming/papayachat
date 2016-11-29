@@ -1,6 +1,7 @@
 "use strict";
-const EventEmitter = require("events").EventEmitter;
-const WebSocket = reqlib('/app/WebSocketServer');
+const EventEmitter  = require("events").EventEmitter;
+const WebSocket     = reqlib('/app/WebSocketServer');
+const ChatPRC       = reqlib('/app/channel/ChatPRC.js');
 
 class App extends EventEmitter{
 
@@ -13,7 +14,8 @@ class App extends EventEmitter{
 
     constructor() {
         super();
-        this.isrun = false;
+        this.isrun      = false;
+        this.chatPRC    = new ChatPRC();
         this.chatServer = new WebSocket("127.0.0.1",20010);
     }
 
