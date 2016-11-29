@@ -6,8 +6,9 @@ const EventEmitter = require("events").EventEmitter;
 
 class ChatPRC extends EventEmitter {
 
-    static KEY_RosterOnLine = 'rosterOnLine';
-    static KEY_RosterOffLine = 'rosterOffline';
+
+    static KEY_RosterOnLine = 'ChatPRC_rosterOnLine';
+    static KEY_RosterOffLine = 'ChatPRC_rosterOffline';
 
     constructor(){
         super();

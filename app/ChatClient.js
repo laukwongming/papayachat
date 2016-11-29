@@ -45,7 +45,6 @@ class ChatClient{
 
     addToUsersContainer(){
         this.usersContainer().addClient(this);
-        App.getInstance().chatPRC.emit(ChatPRC.KEY_RosterOnLine,this);
     }
 
     sendJsonObj(obj){
